@@ -1,0 +1,312 @@
+------------------------------------------------------------------------------------------------------------------
+Q1: How do you find all .log files in the /var/log directory that were modified more than 
+    15 days ago, but exclude those files that are larger than 500MB? 
+
+Ans: find /var/log -name "*.log" -mtime +15 ! -size +500M
+
+     find: The command used to search for files.
+     /var/log: The directory to search in.
+     -name "*.log": Searches for files with a .log extension.
+     -mtime +15: Finds files modified more than 15 days ago.
+     ! -size +500M: Excludes files larger than 500MB.
+------------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------------------------------------
+Q2:  How can you search for all symbolic links in a directory and delete them using a single 
+     `find` command? 
+
+Ans: find /path/to/directory -type l -exec rm {} +
+
+     find: The command used to search for files.
+     /path/to/directory: Replace this with the directory you want to search in.
+     -type l: Specifies that you want to find symbolic links.
+     -exec rm {} +: Executes the rm command to delete the found symbolic links. The {} is replaced with the found file    names, and the + at the end allows find to pass multiple files to rm at once for efficiency.
+------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------
+Q3:   Using `find`, how do you locate files in the `/home/user` directory that are owned by a 
+      user other than the current owner? 
+
+Ans: find /home/user ! -user $(whoami)
+
+
+     find: The command used to search for files.
+     /home/user: The directory to search in.
+     ! -user $(whoami): This finds files that are not owned by the current user. $(whoami) gets the username of the current user.
+------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------
+Q4:   How can you find all files in the `/etc` directory that contain the word "config" in their 
+      name and have write permission for others?
+
+Ans: find /etc -type f -name "*config*" -perm -002
+
+
+
+find: The command used to search for files.
+/etc: The directory to search in.
+-type f: Specifies that you want to find files (not directories).
+-name "*config*": Looks for files with "config" in their name.
+-perm -002: Finds files that have write permission for others (the last digit 2 represents write permission for others).
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q5:  How can you search for all lines in a file `/etc/passwd` that do not contain the word 
+     "bash"? 
+
+Ans: grep -v "bash" /etc/passwd
+
+
+grep: The command used to search for text in files.
+-v: This option inverts the match, meaning it will select lines that do not match the specified pattern.
+"bash": The word you are searching for.
+/etc/passwd: The file to search in.
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q6:  How do you search recursively through all files in a directory for a specific string, showing 
+     only the matching filenames and excluding binary files? 
+
+Ans: grep -rl --exclude-binary "*" "specific_string" /path/to/directory
+
+
+grep: The command used for searching text in files.
+-r: This option makes the search recursive, going through all subdirectories.
+-l: This option tells grep to only output the names of files with matching lines.
+--exclude-binary "*": Excludes binary files from the search.
+"specific_string": Replace this with the string you want to search for.
+/path/to/directory: Replace this with the directory you want to search in.
+------------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------------------------------------
+Q7:  How can you search for the word "error" in a file, displaying the surrounding 3 lines 
+     before and after each match? 
+
+Ans: grep -C 3 "error" /path/to/file
+
+
+grep: The command used to search for text in files.
+-C 3: This option tells grep to display 3 lines of context before and after each matching line.
+"error": The word you are searching for.
+/path/to/file: The file you want to search in.
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q8:  Using `grep`, how would you find all occurrences of the word "root" in `/etc/passwd` that 
+     start at the beginning of a line? 
+
+Ans: grep "^root" /etc/passwd
+
+
+grep: The command used for searching text in files.
+^root: The caret (^) indicates that the match should occur at the beginning of the line, followed by the word "root."
+/etc/passwd: The file you want to search in.
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q9:  How can you create a compressed archive of the `/home/user` directory, excluding all 
+     `.mp4` files? 
+
+Ans: tar --exclude='*.mp4' -czvf user_archive.tar.gz -C /home user .
+
+
+tar: The command used for archiving files.
+--exclude='*.mp4': Excludes all files with the .mp4 extension from the archive.
+-czvf:
+c: Create a new archive.
+z: Compress the archive using gzip.
+v: Verbosely list files processed.
+f: Specifies the name of the archive file (user_archive.tar.gz).
+-C /home: Changes to the /home directory before starting the archiving process.
+user .: Specifies the user directory and indicates to include its contents.
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q10:  How would you extract only a specific file `file.txt` from a `.tar.gz` archive without 
+      extracting the entire archive? 
+
+Ans: tar -xzvf archive.tar.gz file.txt
+
+
+tar: The command used for handling archives.
+-x: Extract files from the archive.
+-z: Decompress the archive using gzip.
+-v: Verbosely list files being processed (optional).
+-f: Specifies the name of the archive file (archive.tar.gz).
+file.txt: The specific file you want to extract from the archive.
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q11:  How can you append a file called `newfile.txt` to an existing `archive.tar.gz` without 
+      decompressing the archive? 
+
+Ans: tar -xzf archive.tar.gz && tar -rf archive.tar newfile.txt && gzip archive.tar
+
+
+-xzf: Extracts the contents of the compressed archive.
+-rf: Appends the specified file to the archive.
+gzip: Recompresses the .tar archive back to .tar.gz.
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q12: How would you list the contents of a `.tar.gz` archive without extracting it?
+
+Ans: tar -tzf archive.tar.gz
+
+
+tar: The command used for handling archives.
+-t: Lists the contents of the archive.
+-z: Decompresses the archive using gzip (needed for .tar.gz files).
+-f: Specifies the name of the archive file (archive.tar.gz).
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q13: How can you list all currently running processes and then filter for processes that 
+     include the word "java", showing only the process ID and name? 
+
+Ans: ps aux | grep "java" | awk '{print $2, $11}'
+
+
+ps aux: Lists all currently running processes.
+|: Pipes the output of the previous command to the next command.
+grep "java": Filters the list to include only lines that contain the word "java."
+awk '{print $2, $11}': Extracts and prints the second column (Process ID) and the eleventh column (process name) from the filtered output.
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q14: How can you display a list of all files in `/var/log`, then filter for files containing the word 
+     "error" using both `ls` and `grep` in a pipeline? 
+
+Ans: ls /var/log | grep "error"
+
+
+ls /var/log: Lists all files in the /var/log directory.
+|: Pipes the output of ls to the next command.
+grep "error": Filters the list to include only files that contain the word "error" in their names.
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q15: How do you count the number of lines in a file that contain the word "failed" using 
+     `grep` and `wc`? 
+
+Ans: grep "failed" /path/to/file | wc -l
+
+
+grep "failed" /path/to/file: Searches for lines containing the word "failed" in the specified file.
+|: Pipes the output of grep to the next command.
+wc -l: Counts the number of lines in the output.
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q16:  How can you display the last 20 lines of a log file and filter the lines that contain the 
+      word "critical" using a combination of `tail` and `grep`?
+
+Ans: tail -n 20 /path/to/logfile | grep "critical"
+
+
+tail -n 20 /path/to/logfile: Displays the last 20 lines of the specified log file.
+|: Pipes the output of tail to the next command.
+grep "critical": Filters the output to include only lines that contain the word "critical."
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q17:  How do you display the disk usage of all files and directories in `/home/user` in human
+      readable format, sorted by size in descending order?  
+
+Ans: du -h /home/user | sort -hr
+
+
+du -h /home/user:
+
+du: Disk usage command.
+-h: Displays sizes in a human-readable format (e.g., KB, MB).
+/home/user: Specifies the directory to check.
+|: Pipes the output of du to the next command.
+
+sort -hr:
+
+sort: Sorts the output.
+-h: Sorts human-readable numbers.
+-r: Reverses the order to sort by size in descending order.
+------------------------------------------------------------------------------------------------------------------
+
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q18:  How can you display the total disk usage of the `/var` directory but exclude the 
+      subdirectory `/var/log`? 
+
+Ans: du -sh --exclude=/var/log /var
+
+
+du: Disk usage command.
+-s: Summarizes the total size.
+-h: Displays the size in a human-readable format (e.g., KB, MB).
+--exclude=/var/log: Excludes the specified directory from the calculation.
+/var: Specifies the directory to check.
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q19:  How can you use `du` to find the disk usage of files larger than 100MB in a directory? 
+
+Ans: find /path/to/directory -type f -size +100M -exec du -h {} +
+
+
+find: The command used to search for files.
+/path/to/directory: Replace this with the path to the directory you want to search in.
+-type f: Specifies that you want to find files (not directories).
+-size +100M: Finds files larger than 100MB.
+-exec du -h {} +: Executes the du command on each found file, displaying its disk usage in a human-readable format.
+------------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------------------------------
+Q20: How do you display the disk usage of the 10 largest directories in the `/usr` directory 
+     using `du`? 
+
+
+Ans: du -sh /usr/* | sort -hr | head -n 10
+
+
+du -sh /usr/*:
+
+du: Disk usage command.
+-h: Displays sizes in a human-readable format (e.g., KB, MB).
+/usr/*: Specifies to include all directories and files within /usr.
+| sort -hr:
+
+sort: Sorts the output.
+-h: Sorts human-readable numbers.
+-r: Reverses the order to sort by size in descending order.
+| head -n 10: Displays only the top 10 entries from the sorted list.
+------------------------------------------------------------------------------------------------------------------
